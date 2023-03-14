@@ -37,4 +37,18 @@ public class JobController {
 		}
 		return new ResponseEntity<String>(message, HttpStatus.OK);
 	}
+
+	@PostMapping("/dump-employee-data/scaled")
+	public ResponseEntity<String> runJobParallely() {
+		JobParameters params = new JobParametersBuilder().addLong("startAt", System.currentTimeMillis()).toJobParameters();
+		String message = null;
+		try {
+			jobLauncher.run(job, params);
+			message = "Data successfully dumped!!!";
+		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+			message = "Error in dumping data!!!";
+			e.printStackTrace();
+		}
+		return new ResponseEntity<String>(message, HttpStatus.OK);
+	}
 }
